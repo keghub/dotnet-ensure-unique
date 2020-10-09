@@ -18,6 +18,12 @@ namespace EMG.Tools.EnsureUnique
 
             });
 
+            Add(CommonOptions.BucketNameOption);
+
+            Add(CommonOptions.FilePrefixOption);
+
+            AddOption(CommonOptions.TokenOption);
+
             Handler = CommandHandler.Create<FileInfo, IHost>(ExecuteCommandAsync);
         }
 
