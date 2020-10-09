@@ -2,7 +2,6 @@
 using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Hosting;
-using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +20,7 @@ namespace EMG.Tools.EnsureUnique
                 new RunExeCommand()
             };
 
-            rootCommand.AddGlobalOption(VerboseOption);
+            rootCommand.AddGlobalOption(CommonOptions.VerboseOption);
 
             await new CommandLineBuilder(rootCommand)
                         .UseHost(_ => Host.CreateDefaultBuilder(), ConfigureHost)
@@ -29,8 +28,6 @@ namespace EMG.Tools.EnsureUnique
                         .Build()
                         .InvokeAsync(args);
         }
-
-        private static Option<LogLevel> VerboseOption = new Option<LogLevel>(new[] { "--verbosity", "-v" }, description: "Specify the log verbosity", getDefaultValue: () => LogLevel.Error);
 
         private static void ConfigureHost(IHostBuilder host)
         {
@@ -41,10 +38,7 @@ namespace EMG.Tools.EnsureUnique
 
         private static void ConfigureLogging(HostBuilderContext context, ILoggingBuilder logging)
         {
-            if (context.Properties.TryGetValue(typeof(InvocationContext), out var obj) &&
-                obj is InvocationContext ctx &&
-                ctx.ParseResult.HasOption(VerboseOption) &&
-                ctx.ParseResult.ValueForOption(VerboseOption) is LogLevel logLevel)
+            if (context.TryGetOptionValue<LogLevel>(CommonOptions.VerboseOption, out LogLevel logLevel))
             {
                 logging.SetMinimumLevel(logLevel);
             }
@@ -52,7 +46,32 @@ namespace EMG.Tools.EnsureUnique
 
         private static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
         {
+            services.AddOptions();
+
+            services.Configure<ProcessExecutorOptions>(options =>
+            {
+                if (context.TryGetOptionValue<string>(CommonOptions.TokenOption, out string token))
+                {
+                    options.Token = token;
+                }
+            });
+
+            services.Configure<S3ConcurrencyServiceOptions>(options =>
+            {
+                if (context.TryGetOptionValue<string>(CommonOptions.BucketNameOption, out string bucketName))
+                {
+                    options.BucketName = bucketName;
+                }
+
+                if (context.TryGetOptionValue<string>(CommonOptions.FilePrefixOption, out string filePrefix))
+                {
+                    options.FilePrefix = filePrefix;
+                }
+            });
+
             services.AddSingleton<IProcessExecutor, DefaultProcessExecutor>();
+
+            services.AddSingleton<IConcurrencyService, DummyConcurrencyService>();
         }
     }
 }
