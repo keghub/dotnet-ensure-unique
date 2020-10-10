@@ -37,3 +37,4 @@ The following options will be supported
 |`--prefix`||true|The prefix to be prepended to the key of the lock file|
 |`--token`|||The token to be used to ensure uniqueness.<br />If not specified, an hash of the executable is used|
 |`--verbosity`|`-v`||The verbosity of the logging for the tool|
+
