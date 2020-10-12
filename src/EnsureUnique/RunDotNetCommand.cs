@@ -15,28 +15,39 @@ namespace EMG.Tools.EnsureUnique
         {
             Add(new Argument<FileInfo>("path", "Path to the program to execute using 'dotnet'")
             {
-
+                Name = nameof(RunCommandArguments.PathToProgram)
             });
 
-            Add(CommonOptions.BucketNameOption);
+            AddOption(CommonOptions.BucketNameOption);
 
-            Add(CommonOptions.FilePrefixOption);
+            AddOption(CommonOptions.FilePrefixOption);
 
             AddOption(CommonOptions.TokenOption);
 
-            Handler = CommandHandler.Create<FileInfo, IHost>(ExecuteCommandAsync);
+            AddOption(CommonOptions.ProgramArguments);
+
+            Handler = CommandHandler.Create<RunCommandArguments, IHost>(ExecuteCommandAsync);
         }
 
-        private async static Task ExecuteCommandAsync(FileInfo path, IHost host)
+        private async static Task ExecuteCommandAsync(RunCommandArguments arguments, IHost host)
         {
             var executor = host.Services.GetRequiredService<IProcessExecutor>();
 
             await executor.ExecuteProcess(new ProcessStartInfo
             {
                 FileName = "dotnet",
-                Arguments = path.FullName,
+                Arguments = GetArguments(arguments),
                 CreateNoWindow = true
             });
+        }
+
+        private static string GetArguments(RunCommandArguments arguments)
+        {
+            return arguments.ProgramArguments switch 
+            {
+                null => arguments.PathToProgram.FullName,
+                _ => $"{arguments.PathToProgram.FullName} {arguments.ProgramArguments}"
+            };
         }
     }
 }

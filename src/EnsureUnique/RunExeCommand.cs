@@ -18,18 +18,25 @@ namespace EMG.Tools.EnsureUnique
 
             });
 
+            AddOption(CommonOptions.BucketNameOption);
+
+            AddOption(CommonOptions.FilePrefixOption);
+
             AddOption(CommonOptions.TokenOption);
 
-            Handler = CommandHandler.Create<FileInfo, IHost>(ExecuteCommandAsync);
+            AddOption(CommonOptions.ProgramArguments);
+
+            Handler = CommandHandler.Create<RunCommandArguments, IHost>(ExecuteCommandAsync);
         }
 
-        private async static Task ExecuteCommandAsync(FileInfo path, IHost host)
+        private async static Task ExecuteCommandAsync(RunCommandArguments arguments, IHost host)
         {
             var executor = host.Services.GetRequiredService<IProcessExecutor>();
 
             await executor.ExecuteProcess(new ProcessStartInfo
             {
-                FileName = path.FullName,
+                FileName = arguments.PathToProgram.FullName,
+                Arguments = arguments.ProgramArguments,
                 CreateNoWindow = true
             });
         }

@@ -15,13 +15,17 @@ namespace EMG.Tools.EnsureUnique
 
         public static Option<string> FilePrefixOption = new Option<string>(new[] { "--prefix" }, description: "Specify the file prefix to be used when creating a file on AWS S3")
         {
-            Name = "FilePrefix",
-            IsRequired = true
+            Name = "FilePrefix"
         };
 
         public static Option<string> TokenOption = new Option<string>("--token", description: "Specify the token to be used to ensure uniqueness")
         {
             Name = "ExecutionToken"
+        };
+
+        public static Option<string> ProgramArguments = new Option<string>("--args", description: "Specify arguments to be passed to the program")
+        {
+            Name = nameof(RunCommandArguments.ProgramArguments)
         };
     }
 }
