@@ -31,20 +31,36 @@ namespace EMG.Tools.EnsureUnique
 
             if (await _concurrencyService.TryAcquireLockAsync(token))
             {
-                var process = new Process
+                _logger.LogDebug("Lock on token {TOKEN} acquired", token);
+
+                try
                 {
-                    StartInfo = startInfo
-                };
+                    var process = new Process
+                    {
+                        StartInfo = startInfo
+                    };
 
-                _logger.LogTrace($"Starting: {startInfo.FileName} {startInfo.Arguments} with token: {token}");
+                    _logger.LogDebug("Starting: {FILENAME} {ARGS} with token: {TOKEN}", startInfo.FileName, startInfo.Arguments, token);
 
-                process.Start();
+                    process.Start();
 
-                process.WaitForExit();
+                    process.WaitForExit();
 
-                _logger.Log(GetLogLevelForExitCode(process.ExitCode), "Exit code: {EXITCODE}", process.ExitCode);
+                    _logger.Log(GetLogLevelForExitCode(process.ExitCode), "Exit code: {EXITCODE}", process.ExitCode);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "An error occurred while executing '{FILENAME} {ARGS}'", startInfo.FileName, startInfo.Arguments);
+                    throw;
+                }
+                finally
+                {
+                    _logger.LogDebug("Releasing lock on token {TOKEN}", token);
 
-                await _concurrencyService.ReleaseLockAsync(token);
+                    await _concurrencyService.ReleaseLockAsync(token);
+
+                    _logger.LogDebug("Lock on token {TOKEN} released", token);
+                }
             }
         }
 
@@ -52,7 +68,7 @@ namespace EMG.Tools.EnsureUnique
         {
             return exitCode switch
             {
-                0 => LogLevel.Trace,
+                0 => LogLevel.Debug,
                 _ => LogLevel.Error
             };
         }

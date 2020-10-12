@@ -4,6 +4,8 @@ using System.CommandLine.Builder;
 using System.CommandLine.Hosting;
 using System.CommandLine.Parsing;
 using System.Threading.Tasks;
+using Amazon.S3;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -71,7 +73,11 @@ namespace EMG.Tools.EnsureUnique
 
             services.AddSingleton<IProcessExecutor, DefaultProcessExecutor>();
 
-            services.AddSingleton<IConcurrencyService, DummyConcurrencyService>();
+            services.AddSingleton<IConcurrencyService, S3ConcurrencyService>();
+
+            services.AddDefaultAWSOptions(context.Configuration.GetAWSOptions());
+
+            services.AddAWSService<IAmazonS3>();
         }
     }
 }
