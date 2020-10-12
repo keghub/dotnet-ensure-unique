@@ -34,7 +34,7 @@ The following options will be supported
 |Option|Short version|Required|Description|
 |-|-|-|-|
 |`--bucket`||true|The name of the bucket to place the lock file|
-|`--prefix`||true|The prefix to be prepended to the key of the lock file|
+|`--prefix`|||The prefix to be prepended to the key of the lock file|
 |`--token`|||The token to be used to ensure uniqueness.<br />If not specified, an hash of the executable is used|
 |`--verbosity`|`-v`||The verbosity of the logging for the tool|
 |`--args`|||Arguments to be forwarded to the program to execute|
