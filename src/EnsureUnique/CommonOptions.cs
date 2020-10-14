@@ -21,7 +21,7 @@ namespace EMG.Tools.EnsureUnique
         /// </summary>
         public static readonly Option<string> BucketNameOption = new Option<string>(new[] { "--bucket" }, description: "Specify the AWS S3 bucket to use to check the lock")
         {
-            Name = "BucketName",
+            Name = nameof(S3ConcurrencyServiceOptions.BucketName),
             IsRequired = true
         };
 
@@ -30,7 +30,7 @@ namespace EMG.Tools.EnsureUnique
         /// </summary>
         public static readonly Option<string> FilePrefixOption = new Option<string>(new[] { "--prefix" }, description: "Specify the file prefix to be used when creating a file on AWS S3")
         {
-            Name = "FilePrefix"
+            Name = nameof(S3ConcurrencyServiceOptions.FilePrefix)
         };
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace EMG.Tools.EnsureUnique
         /// </summary>
         public static readonly Option<string> TokenOption = new Option<string>("--token", description: "Specify the token to be used to ensure uniqueness")
         {
-            Name = "ExecutionToken"
+            Name = nameof(ProcessExecutorOptions.Token)
         };
 
         /// <summary>

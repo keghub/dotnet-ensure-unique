@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.S3;
@@ -24,9 +25,9 @@ namespace EMG.Tools.EnsureUnique.Concurrency
         /// <param name="logger">Logger.</param>
         public S3ConcurrencyService(IAmazonS3 s3, IOptions<S3ConcurrencyServiceOptions> options, ILogger<S3ConcurrencyService> logger)
         {
-            _s3 = s3 ?? throw new System.ArgumentNullException(nameof(s3));
-            _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
-            _options = options?.Value ?? throw new AmazonS3Exception(nameof(options));
+            _s3 = s3 ?? throw new ArgumentNullException(nameof(s3));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
         /// <summary>
