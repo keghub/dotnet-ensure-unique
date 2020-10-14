@@ -5,6 +5,7 @@ using System.CommandLine.Hosting;
 using System.CommandLine.Parsing;
 using System.Threading.Tasks;
 using Amazon.S3;
+using EMG.Tools.EnsureUnique.Concurrency;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,9 +13,9 @@ using Microsoft.Extensions.Logging;
 
 namespace EMG.Tools.EnsureUnique
 {
-    class Program
+    internal class Program
     {
-        static async Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var rootCommand = new RootCommand("Execute a program and ensure there are no concurrent executions")
             {
@@ -28,7 +29,8 @@ namespace EMG.Tools.EnsureUnique
                         .UseHost(_ => Host.CreateDefaultBuilder(), ConfigureHost)
                         .UseDefaults()
                         .Build()
-                        .InvokeAsync(args);
+                        .InvokeAsync(args)
+                        .ConfigureAwait(false);
         }
 
         private static void ConfigureHost(IHostBuilder host)

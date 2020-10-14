@@ -1,17 +1,23 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.CommandLine.IO;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace EMG.Tools.EnsureUnique
 {
+    /// <summary>
+    /// A <see cref="Command" /> that triggers the execution of a .NET Core program using the <c>dotnet</c> launcher.
+    /// </summary>
     public class RunDotNetCommand : Command
     {
-        public RunDotNetCommand() : base("dotnet", "Executes a dotnet program")
+        /// <summary>
+        /// Constucts an instance of <see cref="RunDotNetCommand" />.
+        /// </summary>
+        public RunDotNetCommand()
+            : base("dotnet", "Executes a dotnet program")
         {
             Add(new Argument<FileInfo>("path", "Path to the program to execute using 'dotnet'")
             {
@@ -29,7 +35,7 @@ namespace EMG.Tools.EnsureUnique
             Handler = CommandHandler.Create<RunCommandArguments, IHost>(ExecuteCommandAsync);
         }
 
-        private async static Task ExecuteCommandAsync(RunCommandArguments arguments, IHost host)
+        private static async Task ExecuteCommandAsync(RunCommandArguments arguments, IHost host)
         {
             var executor = host.Services.GetRequiredService<IProcessExecutor>();
 
@@ -38,12 +44,12 @@ namespace EMG.Tools.EnsureUnique
                 FileName = "dotnet",
                 Arguments = GetArguments(arguments),
                 CreateNoWindow = true
-            });
+            }).ConfigureAwait(false);
         }
 
         private static string GetArguments(RunCommandArguments arguments)
         {
-            return arguments.ProgramArguments switch 
+            return arguments.ProgramArguments switch
             {
                 null => arguments.PathToProgram.FullName,
                 _ => $"{arguments.PathToProgram.FullName} {arguments.ProgramArguments}"

@@ -1,21 +1,27 @@
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.CommandLine.IO;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace EMG.Tools.EnsureUnique
 {
+    /// <summary>
+    /// A <see cref="Command" /> that triggers the execution of an executable file.
+    /// </summary>
     public class RunExeCommand : Command
     {
-        public RunExeCommand() : base("exe", "Executes a program")
+        /// <summary>
+        /// Constucts an instance of <see cref="RunExeCommand" />.
+        /// </summary>
+        public RunExeCommand()
+            : base("exe", "Executes a program")
         {
             Add(new Argument<FileInfo>("path", "Path to the program to execute")
             {
-
+                Name = nameof(RunCommandArguments.PathToProgram)
             });
 
             AddOption(CommonOptions.BucketNameOption);
@@ -29,7 +35,7 @@ namespace EMG.Tools.EnsureUnique
             Handler = CommandHandler.Create<RunCommandArguments, IHost>(ExecuteCommandAsync);
         }
 
-        private async static Task ExecuteCommandAsync(RunCommandArguments arguments, IHost host)
+        private static async Task ExecuteCommandAsync(RunCommandArguments arguments, IHost host)
         {
             var executor = host.Services.GetRequiredService<IProcessExecutor>();
 
@@ -38,7 +44,7 @@ namespace EMG.Tools.EnsureUnique
                 FileName = arguments.PathToProgram.FullName,
                 Arguments = arguments.ProgramArguments,
                 CreateNoWindow = true
-            });
+            }).ConfigureAwait(false);
         }
     }
 }
