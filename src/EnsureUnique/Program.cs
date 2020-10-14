@@ -54,7 +54,7 @@ namespace EMG.Tools.EnsureUnique
 
             services.Configure<ProcessExecutorOptions>(options =>
             {
-                if (context.TryGetOptionValue<string>(CommonOptions.TokenOption, out string token))
+                if (context.TryGetOptionValue<string>(CommonOptions.TokenOption, out string? token))
                 {
                     options.Token = token;
                 }
@@ -62,12 +62,12 @@ namespace EMG.Tools.EnsureUnique
 
             services.Configure<S3ConcurrencyServiceOptions>(options =>
             {
-                if (context.TryGetOptionValue<string>(CommonOptions.BucketNameOption, out string bucketName))
+                if (context.TryGetOptionValue<string>(CommonOptions.BucketNameOption, out string? bucketName))
                 {
                     options.BucketName = bucketName;
                 }
 
-                if (context.TryGetOptionValue<string>(CommonOptions.FilePrefixOption, out string filePrefix))
+                if (context.TryGetOptionValue<string>(CommonOptions.FilePrefixOption, out string? filePrefix))
                 {
                     options.FilePrefix = filePrefix;
                 }

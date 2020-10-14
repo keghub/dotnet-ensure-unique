@@ -10,11 +10,11 @@ namespace EMG.Tools.EnsureUnique
         /// <summary>
         /// The path of the program to execute.
         /// </summary>
-        public FileInfo PathToProgram { get; set; }
+        public FileInfo? PathToProgram { get; set; }
 
         /// <summary>
         /// The additional arguments to be forwarded to the program to execute.
         /// </summary>
-        public string ProgramArguments { get; set; }
+        public string? ProgramArguments { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Diagnostics;
@@ -37,6 +38,10 @@ namespace EMG.Tools.EnsureUnique
 
         private static async Task ExecuteCommandAsync(RunCommandArguments arguments, IHost host)
         {
+            _ = arguments ?? throw new ArgumentNullException(nameof(arguments));
+
+            _ = arguments.PathToProgram ?? throw new ArgumentException($"{nameof(RunCommandArguments.PathToProgram)} should not be null.", nameof(arguments));
+
             var executor = host.Services.GetRequiredService<IProcessExecutor>();
 
             await executor.ExecuteProcess(new ProcessStartInfo

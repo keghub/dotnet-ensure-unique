@@ -1,3 +1,4 @@
+using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Diagnostics;
@@ -49,6 +50,10 @@ namespace EMG.Tools.EnsureUnique
 
         private static string GetArguments(RunCommandArguments arguments)
         {
+            _ = arguments ?? throw new ArgumentNullException(nameof(arguments));
+
+            _ = arguments.PathToProgram ?? throw new ArgumentException($"{nameof(RunCommandArguments.PathToProgram)} should not be null.", nameof(arguments));
+
             return arguments.ProgramArguments switch
             {
                 null => arguments.PathToProgram.FullName,

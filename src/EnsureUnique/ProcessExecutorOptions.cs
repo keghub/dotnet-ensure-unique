@@ -8,6 +8,6 @@ namespace EMG.Tools.EnsureUnique
         /// <summary>
         /// The token to be used to guarantee unique executions.
         /// </summary>
-        public string Token { get; set; }
+        public string? Token { get; set; }
     }
 }
