@@ -21,8 +21,7 @@ namespace EMG.Tools.EnsureUnique
         /// </summary>
         public static readonly Option<string> BucketNameOption = new Option<string>(new[] { "--bucket" }, description: "Specify the AWS S3 bucket to use to check the lock")
         {
-            Name = nameof(S3ConcurrencyServiceOptions.BucketName),
-            IsRequired = true
+            Name = nameof(S3ConcurrencyServiceOptions.BucketName)
         };
 
         /// <summary>

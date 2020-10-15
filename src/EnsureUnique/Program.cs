@@ -42,7 +42,7 @@ namespace EMG.Tools.EnsureUnique
 
         private static void ConfigureLogging(HostBuilderContext context, ILoggingBuilder logging)
         {
-            if (context.TryGetOptionValue<LogLevel>(CommonOptions.VerboseOption, out LogLevel logLevel))
+            if (context.TryGetOptionValue(CommonOptions.VerboseOption, out LogLevel logLevel))
             {
                 logging.SetMinimumLevel(logLevel);
             }
@@ -54,20 +54,22 @@ namespace EMG.Tools.EnsureUnique
 
             services.Configure<ProcessExecutorOptions>(options =>
             {
-                if (context.TryGetOptionValue<string>(CommonOptions.TokenOption, out string? token))
+                if (context.TryGetOptionValue(CommonOptions.TokenOption, out string? token))
                 {
                     options.Token = token;
                 }
             });
 
+            services.Configure<S3ConcurrencyServiceOptions>(context.Configuration.GetSection("DotNetEnsureUnique").GetSection("S3"));
+
             services.Configure<S3ConcurrencyServiceOptions>(options =>
             {
-                if (context.TryGetOptionValue<string>(CommonOptions.BucketNameOption, out string? bucketName))
+                if (context.TryGetOptionValue(CommonOptions.BucketNameOption, out string? bucketName))
                 {
                     options.BucketName = bucketName;
                 }
 
-                if (context.TryGetOptionValue<string>(CommonOptions.FilePrefixOption, out string? filePrefix))
+                if (context.TryGetOptionValue(CommonOptions.FilePrefixOption, out string? filePrefix))
                 {
                     options.FilePrefix = filePrefix;
                 }
