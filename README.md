@@ -33,8 +33,21 @@ The following options will be supported
 
 |Option|Short version|Required|Description|
 |-|-|-|-|
-|`--bucket`||true|The name of the bucket to place the lock file|
+|`--bucket`|||The name of the bucket to place the lock file|
 |`--prefix`|||The prefix to be prepended to the key of the lock file|
 |`--token`|||The token to be used to ensure uniqueness.<br />If not specified, an hash of the executable is used|
 |`--verbosity`|`-v`||The verbosity of the logging for the tool|
 |`--args`|||Arguments to be forwarded to the program to execute|
+
+## Environment variables
+
+Certain options can be specified also via environment variables.
+
+|Name|Description|
+|-|-|
+|DotNetEnsureUnique__S3__BucketName|The name of the bucket to place the lock file|
+|DotNetEnsureUnique__S3__FilePrefixThe prefix to be prepended to the key of the lock file|
+
+Command line arguments will override environment variables values.
+
+Please notice that either one between the environment variable or the command line option for the AWS S3 bucket name must be specified.
