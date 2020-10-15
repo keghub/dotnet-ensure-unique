@@ -46,7 +46,7 @@ Certain options can be specified also via environment variables.
 |Name|Description|
 |-|-|
 |DotNetEnsureUnique__S3__BucketName|The name of the bucket to place the lock file|
-|DotNetEnsureUnique__S3__FilePrefixThe prefix to be prepended to the key of the lock file|
+|DotNetEnsureUnique__S3__FilePrefix|The prefix to be prepended to the key of the lock file|
 
 Command line arguments will override environment variables values.
 
