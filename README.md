@@ -48,6 +48,8 @@ Certain options can be specified also via environment variables.
 |`DotNetEnsureUnique__S3__BucketName`|The name of the bucket to place the lock file|
 |`DotNetEnsureUnique__S3__FilePrefix`|The prefix to be prepended to the key of the lock file|
 
+### Precendence
+
 Command line arguments will override environment variables values.
 
 Please notice that either one between the environment variable or the command line option for the AWS S3 bucket name must be specified.
