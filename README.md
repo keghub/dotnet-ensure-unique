@@ -39,7 +39,7 @@ The following options will be supported
 |`--verbosity`|`-v`||The verbosity of the logging for the tool|
 |`--args`|||Arguments to be forwarded to the program to execute|
 
-## Environment variables
+### Environment variables
 
 Certain options can be specified also via environment variables.
 
