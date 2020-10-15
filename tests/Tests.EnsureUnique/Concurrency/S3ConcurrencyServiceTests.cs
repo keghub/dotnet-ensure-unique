@@ -8,6 +8,7 @@ using AutoFixture.NUnit3;
 using EMG.Tools.EnsureUnique.Concurrency;
 using Moq;
 using NUnit.Framework;
+using static Tests.Concurrency.S3Expectations;
 
 namespace Tests.Concurrency
 {
@@ -29,7 +30,7 @@ namespace Tests.Concurrency
 
             await sut.TryAcquireLockAsync(token);
 
-            Mock.Get(s3).Verify(p => p.GetObjectMetadataAsync(options.BucketName, It.Is<string>(s => s.StartsWith(options.FilePrefix) && s.EndsWith(token)), It.IsAny<CancellationToken>()));
+            Mock.Get(s3).Verify(p => p.GetObjectMetadataAsync(options.BucketName, ObjectName(options.FilePrefix, token), It.IsAny<CancellationToken>()));
         }
 
         [Test, CustomAutoData]
@@ -41,7 +42,7 @@ namespace Tests.Concurrency
 
             await sut.TryAcquireLockAsync(token);
 
-            Mock.Get(s3).Verify(p => p.PutObjectAsync(It.Is<PutObjectRequest>(r => r.BucketName == options.BucketName && r.Key.StartsWith(options.FilePrefix) && r.Key.EndsWith(token) && r.ContentBody == string.Empty), It.IsAny<CancellationToken>()));
+            Mock.Get(s3).Verify(p => p.PutObjectAsync(PutRequest(options, token), It.IsAny<CancellationToken>()));
         }
 
         [Test, CustomAutoData]
@@ -53,7 +54,7 @@ namespace Tests.Concurrency
 
             await sut.ReleaseLockAsync(token);
 
-            Mock.Get(s3).Verify(p => p.GetObjectMetadataAsync(options.BucketName, It.Is<string>(s => s.StartsWith(options.FilePrefix) && s.EndsWith(token)), It.IsAny<CancellationToken>()));
+            Mock.Get(s3).Verify(p => p.GetObjectMetadataAsync(options.BucketName, ObjectName(options.FilePrefix, token), It.IsAny<CancellationToken>()));
         }
 
         [Test, CustomAutoData]
@@ -65,7 +66,14 @@ namespace Tests.Concurrency
 
             await sut.ReleaseLockAsync(token);
 
-            Mock.Get(s3).Verify(p => p.DeleteObjectAsync(options.BucketName, It.Is<string>(s => s.StartsWith(options.FilePrefix) && s.EndsWith(token)), It.IsAny<CancellationToken>()));
+            Mock.Get(s3).Verify(p => p.DeleteObjectAsync(options.BucketName, ObjectName(options.FilePrefix, token), It.IsAny<CancellationToken>()));
         }
+    }
+
+    public static class S3Expectations
+    {
+        public static string ObjectName(string prefix, string token) => Match.Create<string>(s => s.StartsWith(prefix) && s.EndsWith(token));
+
+        public static PutObjectRequest PutRequest(S3ConcurrencyServiceOptions options, string token) => Match.Create<PutObjectRequest>(r => r.BucketName == options.BucketName && r.Key.StartsWith(options.FilePrefix) && r.Key.EndsWith(token) && r.ContentBody == string.Empty);
     }
 }
