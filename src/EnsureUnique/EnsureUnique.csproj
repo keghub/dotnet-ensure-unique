@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>dotnet-ensure-unique</AssemblyName>
+    <RootNamespace>EMG.Tools</RootNamespace>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>EMG.Tools.EnsureUnique</PackageId>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>dotnet-ensure-unique</ToolCommandName>
+    <PackageVersion>1.0.0</PackageVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>EMG</Authors>
+    <Company>EMG - Educations Media Group AB</Company>
+    <PackageDescription>A dotnet global tool that ensures an application is executed only once at the same time.</PackageDescription>
+    <PackageTags>dotnet-core;dotnet-global-tools;aws-s3;dotnet-tool</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/emgdev/dotnet-ensure-unique</PackageProjectUrl>
+    <PackageIconUrl>http://static.emg-services.net/masterpages/pics/logos/emg-icon-64.png</PackageIconUrl>
+    <NoWarn>NU5105,NU5125,NU5048</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.101" />
+    <PackageReference Include="AWSSDK.S3" Version="3.5.3.1" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20371.2" />
+    <PackageReference Include="System.CommandLine.Hosting" Version="0.3.0-alpha.20371.2" />
+  </ItemGroup>
+
+</Project>
