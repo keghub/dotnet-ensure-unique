@@ -6,6 +6,7 @@ using NUnit.Framework;
 namespace Tests.ProcessRunners
 {
     [TestFixture]
+    [TestOf(typeof(ProcessRunner))]
     public class ProcessRunnerTests
     {
         [Test, CustomAutoData]

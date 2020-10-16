@@ -12,6 +12,7 @@ using NUnit.Framework;
 namespace Tests
 {
     [TestFixture]
+    [TestOf(typeof(DefaultProcessExecutor))]
     public class DefaultProcessExecutorTests
     {
         [Test, CustomAutoData]

@@ -10,6 +10,7 @@ using NUnit.Framework;
 namespace Tests
 {
     [TestFixture]
+    [TestOf(typeof(RunExeCommand))]
     public class RunExeCommandTests
     {
         [Test, CustomAutoData]
