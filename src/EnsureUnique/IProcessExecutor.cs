@@ -1,11 +1,10 @@
 using System;
 using System.Diagnostics;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using EMG.Tools.EnsureUnique.Concurrency;
+using EMG.Tools.EnsureUnique.ProcessRunners;
+using EMG.Tools.EnsureUnique.TokenGenerators;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace EMG.Tools.EnsureUnique
 {
@@ -26,20 +25,27 @@ namespace EMG.Tools.EnsureUnique
     public class DefaultProcessExecutor : IProcessExecutor
     {
         private readonly IConcurrencyService _concurrencyService;
+        private readonly IProcessRunner _processRunner;
+        private readonly IExecutionTokenGenerator _executionTokenGenerator;
         private readonly ILogger<DefaultProcessExecutor> _logger;
-        private readonly ProcessExecutorOptions _options;
 
         /// <summary>
         /// Constructs a new instance of <see cref="DefaultProcessExecutor" />.
         /// </summary>
         /// <param name="concurrencyService">An implementation of <see cref="IConcurrencyService" />.</param>
-        /// <param name="options">A set of configurable options.</param>
+        /// <param name="processRunner">An implementation of <see cref="IProcessRunner" />.</param>
+        /// <param name="executionTokenGenerator">An implementation of <see cref="IExecutionTokenGenerator" /> used to generate execution tokens.</param>
         /// <param name="logger">The logger.</param>
-        public DefaultProcessExecutor(IConcurrencyService concurrencyService, IOptions<ProcessExecutorOptions> options, ILogger<DefaultProcessExecutor> logger)
+        public DefaultProcessExecutor(
+            IConcurrencyService concurrencyService,
+            IProcessRunner processRunner,
+            IExecutionTokenGenerator executionTokenGenerator,
+            ILogger<DefaultProcessExecutor> logger)
         {
             _concurrencyService = concurrencyService ?? throw new ArgumentNullException(nameof(concurrencyService));
+            _processRunner = processRunner ?? throw new ArgumentNullException(nameof(processRunner));
+            _executionTokenGenerator = executionTokenGenerator ?? throw new ArgumentNullException(nameof(executionTokenGenerator));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
         /// <summary>
@@ -50,7 +56,7 @@ namespace EMG.Tools.EnsureUnique
         {
             _ = startInfo ?? throw new ArgumentNullException(nameof(startInfo));
 
-            var token = _options.Token ?? GetExecutionToken(startInfo);
+            var token = _executionTokenGenerator.GenerateToken(startInfo);
 
             if (await _concurrencyService.TryAcquireLockAsync(token).ConfigureAwait(false))
             {
@@ -60,7 +66,7 @@ namespace EMG.Tools.EnsureUnique
                 {
                     _logger.LogDebug("Starting: {FILENAME} {ARGS} with token: {TOKEN}", startInfo.FileName, startInfo.Arguments, token);
 
-                    var exitCode = ProcessRunner(startInfo);
+                    var exitCode = _processRunner.RunProcess(startInfo);
 
                     _logger.Log(GetLogLevelForExitCode(exitCode), "Exit code: {EXITCODE}", exitCode);
                 }
@@ -80,12 +86,6 @@ namespace EMG.Tools.EnsureUnique
             }
         }
 
-        /// <summary>
-        /// A delegate encapsulating the creation and execution of the process. To be used only for testing purposes.
-        /// </summary>
-        /// <value>By default: <see cref="RunProcess" />.</value>
-        public Func<ProcessStartInfo, int> ProcessRunner { get; set; } = RunProcess;
-
         private static LogLevel GetLogLevelForExitCode(int exitCode)
         {
             return exitCode switch
@@ -94,32 +94,5 @@ namespace EMG.Tools.EnsureUnique
                 _ => LogLevel.Error
             };
         }
-
-        private static int RunProcess(ProcessStartInfo startInfo)
-        {
-            var process = new Process
-            {
-                StartInfo = startInfo
-            };
-
-            process.Start();
-
-            process.WaitForExit();
-
-            return process.ExitCode;
-        }
-
-#pragma warning disable CA5351
-        private static string GetExecutionToken(ProcessStartInfo startInfo)
-        {
-            using var hasher = MD5.Create();
-
-            var bytes = hasher.ComputeHash(Encoding.Default.GetBytes($"{startInfo.FileName} {startInfo.Arguments}"));
-
-            var guid = new Guid(bytes);
-
-            return guid.ToString("N");
-        }
-#pragma warning restore CA5351
     }
 }

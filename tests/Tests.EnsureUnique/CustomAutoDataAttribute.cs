@@ -5,12 +5,13 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.NUnit3;
 using EMG.Tools.EnsureUnique;
+using EMG.Tools.EnsureUnique.TokenGenerators;
 
 namespace Tests
 {
     public class CustomAutoDataAttribute : AutoDataAttribute
     {
-        public CustomAutoDataAttribute() : base (FixtureHelper.CreateFixture) { }
+        public CustomAutoDataAttribute() : base(FixtureHelper.CreateFixture) { }
     }
 
     public class InlineCustomAutoDataAttribute : InlineAutoDataAttribute
@@ -32,10 +33,7 @@ namespace Tests
 
             fixture.Register((string program, string args) => new ProcessStartInfo { FileName = program, Arguments = args });
 
-            fixture.Inject(new ProcessExecutorOptions());
-
-            // We replace the default ProcessRunner with a mock from Moq to avoid spawning new processes while testing.
-            fixture.Customize<DefaultProcessExecutor>(c => c.With(p => p.ProcessRunner, (IFixture fixture) => fixture.Create<Func<ProcessStartInfo, int>>()));
+            fixture.Inject(new TokenOptions());
 
             fixture.Customize<GetObjectMetadataResponse>(c => c.Without(p => p.RequestCharged));
 

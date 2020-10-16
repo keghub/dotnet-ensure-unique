@@ -6,10 +6,13 @@ using System.CommandLine.Parsing;
 using System.Threading.Tasks;
 using Amazon.S3;
 using EMG.Tools.EnsureUnique.Concurrency;
+using EMG.Tools.EnsureUnique.ProcessRunners;
+using EMG.Tools.EnsureUnique.TokenGenerators;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace EMG.Tools.EnsureUnique
 {
@@ -52,7 +55,7 @@ namespace EMG.Tools.EnsureUnique
         {
             services.AddOptions();
 
-            services.Configure<ProcessExecutorOptions>(options =>
+            services.Configure<TokenOptions>(options =>
             {
                 if (context.TryGetOptionValue(CommonOptions.TokenOption, out string? token))
                 {
@@ -76,6 +79,19 @@ namespace EMG.Tools.EnsureUnique
             });
 
             services.AddSingleton<IProcessExecutor, DefaultProcessExecutor>();
+
+            services.AddSingleton<IProcessRunner, ProcessRunner>();
+
+            services.AddSingleton<IExecutionTokenGenerator>(sp =>
+            {
+                var md5 = sp.GetRequiredService<MD5ExecutionTokenGenerator>();
+
+                var options = sp.GetRequiredService<IOptions<TokenOptions>>();
+
+                return new FixedTokenExecutionTokenGeneratorAdapter(md5, options);
+            });
+
+            services.AddSingleton<MD5ExecutionTokenGenerator>();
 
             services.AddSingleton<IConcurrencyService, S3ConcurrencyService>();
 

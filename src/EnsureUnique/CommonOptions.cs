@@ -1,5 +1,6 @@
 using System.CommandLine;
 using EMG.Tools.EnsureUnique.Concurrency;
+using EMG.Tools.EnsureUnique.TokenGenerators;
 using Microsoft.Extensions.Logging;
 
 namespace EMG.Tools.EnsureUnique
@@ -37,7 +38,7 @@ namespace EMG.Tools.EnsureUnique
         /// </summary>
         public static readonly Option<string> TokenOption = new Option<string>("--token", description: "Specify the token to be used to ensure uniqueness")
         {
-            Name = nameof(ProcessExecutorOptions.Token)
+            Name = nameof(TokenOptions.Token)
         };
 
         /// <summary>

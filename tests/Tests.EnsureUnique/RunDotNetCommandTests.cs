@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EMG.Tools.EnsureUnique;
 using EMG.Tools.EnsureUnique.Concurrency;
+using EMG.Tools.EnsureUnique.TokenGenerators;
 using NUnit.Framework;
 
 namespace Tests
@@ -12,7 +13,7 @@ namespace Tests
     public class RunDotNetCommandTests
     {
         [Test, CustomAutoData]
-        public void Constructor_adds_Path_argument (RunDotNetCommand sut)
+        public void Constructor_adds_Path_argument(RunDotNetCommand sut)
         {
             Assert.That(sut.Arguments, Has.Exactly(1).InstanceOf<Argument<FileInfo>>().With.Property(nameof(Argument.Name)).EqualTo(nameof(RunCommandArguments.PathToProgram)));
         }
@@ -20,7 +21,7 @@ namespace Tests
         [Test]
         [InlineCustomAutoData(nameof(S3ConcurrencyServiceOptions.BucketName))]
         [InlineCustomAutoData(nameof(S3ConcurrencyServiceOptions.FilePrefix))]
-        [InlineCustomAutoData(nameof(ProcessExecutorOptions.Token))]
+        [InlineCustomAutoData(nameof(TokenOptions.Token))]
         [InlineCustomAutoData(nameof(RunCommandArguments.ProgramArguments))]
         public void Constructor_adds_options(string optionName, RunDotNetCommand sut)
         {
