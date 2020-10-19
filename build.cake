@@ -136,11 +136,6 @@ Task("RunTests")
     {
         throw new CakeException("There was an error while executing the tests");
     }
-    
-    if (!success)
-    {
-        throw new CakeException("There was an error while executing the tests");
-    }
 
     string[] GetTargetFrameworks(FilePath file)
     {
