@@ -3,5 +3,7 @@ mode: ContinuousDeployment
 continuous-delivery-fallback-tag: preview
 
 branches:
+  master:
+    regex: ^master$|^main$
   develop:
     tag: vnext
