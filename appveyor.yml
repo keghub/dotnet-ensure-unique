@@ -31,14 +31,14 @@ deploy:
   - provider: Environment
     name: MyGet EMG Public
     on:
-      branch: master
+      branch: main
   - provider: Environment
     name: NuGet EMG
     on:
-      branch: master
+      branch: main
       appveyor_repo_tag: true
   - provider: Environment
     name: EMG GPR
     on:
-      branch: master
+      branch: main
       appveyor_repo_tag: true
