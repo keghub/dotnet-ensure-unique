@@ -13,7 +13,6 @@
     <PackageId>EMG.Tools.EnsureUnique</PackageId>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>dotnet-ensure-unique</ToolCommandName>
-    <PackageVersion>1.0.0</PackageVersion>
   </PropertyGroup>
 
   <PropertyGroup>

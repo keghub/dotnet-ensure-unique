@@ -24,17 +24,15 @@ Task("Version")
 {
     var version = GitVersion();
 
-    var packageVersion = version.SemVer;
-    var buildVersion = $"{version.FullSemVer}+{DateTimeOffset.UtcNow:yyyyMMddHHmmss}";
-
     state.Version = new VersionInfo
     {
-        PackageVersion = packageVersion,
-        BuildVersion = buildVersion
+        PackageVersion = version.SemVer,
+        AssemblyVersion = $"{version.SemVer}+{version.Sha.Substring(0, 8)}",
+        BuildVersion = $"{version.FullSemVer}+{version.Sha.Substring(0, 8)}-{DateTimeOffset.UtcNow:yyyyMMddHHmmss}"
     };
 
-
     Information($"Package version: {state.Version.PackageVersion}");
+    Information($"Assembly version: {state.Version.AssemblyVersion}");
     Information($"Build version: {state.Version.BuildVersion}");
 
     if (BuildSystem.IsRunningOnAppVeyor)
@@ -62,7 +60,9 @@ Task("Verify")
     {
         Configuration = "Debug",
         NoRestore = true,
-        MSBuildSettings = new DotNetCoreMSBuildSettings().WithProperty("TreatWarningsAsErrors", "True")
+        MSBuildSettings = new DotNetCoreMSBuildSettings()
+                            .WithProperty("TreatWarningsAsErrors", "True")
+                            .SetInformationalVersion(state.Version.PackageVersion)
     };
 
     DotNetCoreBuild(state.Paths.SolutionFile.ToString(), settings);
@@ -223,7 +223,10 @@ Task("PackTool")
     {
         Configuration = "Release",
         NoRestore = true,
-        OutputDirectory = state.Paths.OutputFolder
+        OutputDirectory = state.Paths.OutputFolder,
+        MSBuildSettings = new DotNetCoreMSBuildSettings()
+                            .SetInformationalVersion(state.Version.AssemblyVersion)
+                            .SetVersion(state.Version.PackageVersion),
     };
 
     DotNetCorePack(state.Paths.SolutionFile.ToString(), settings);
@@ -296,5 +299,7 @@ public class VersionInfo
 {
     public string PackageVersion { get; set; }
 
-    public string BuildVersion {get; set; }
+    public string AssemblyVersion { get; set; }
+
+    public string BuildVersion { get; set; }
 }
