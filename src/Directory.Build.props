@@ -5,10 +5,9 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <Configurations>$(Configurations);Verify</Configurations>
     <SkipDefaultEditorConfigAsAdditionalFile>true</SkipDefaultEditorConfigAsAdditionalFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <TreatWarningsAsErrors  Condition=" '$(Configuration)'=='Verify' OR '$(Configuration)'=='Release'">true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors  Condition=" '$(Configuration)'=='Release'">true</TreatWarningsAsErrors>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)\..\CodeAnalysis.Application.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
