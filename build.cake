@@ -62,7 +62,6 @@ Task("Verify")
         NoRestore = true,
         MSBuildSettings = new DotNetCoreMSBuildSettings()
                             .WithProperty("TreatWarningsAsErrors", "True")
-                            .SetInformationalVersion(state.Version.PackageVersion)
     };
 
     DotNetCoreBuild(state.Paths.SolutionFile.ToString(), settings);
