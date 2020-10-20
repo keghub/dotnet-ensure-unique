@@ -221,7 +221,7 @@ Task("PackTool")
         MSBuildSettings = new DotNetCoreMSBuildSettings()
                             .SetInformationalVersion(state.Version.AssemblyVersion)
                             .SetVersion(state.Version.PackageVersion)
-                            .WithProperty("ContinuousIntegrationBuild", "True"),
+                            .WithProperty("ContinuousIntegrationBuild", "true"),
     };
 
     DotNetCorePack(state.Paths.SolutionFile.ToString(), settings);
