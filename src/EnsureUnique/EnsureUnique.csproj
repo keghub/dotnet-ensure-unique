@@ -20,9 +20,7 @@
     <Company>EMG - Educations Media Group AB</Company>
     <PackageDescription>A dotnet global tool that ensures an application is executed only once at the same time.</PackageDescription>
     <PackageTags>dotnet-core;dotnet-global-tools;aws-s3;dotnet-tool</PackageTags>
-  </PropertyGroup>
-
-  <PropertyGroup>
+    <RepositoryUrl>https://github.com/emgdev/dotnet-ensure-unique</RepositoryUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/emgdev/dotnet-ensure-unique</PackageProjectUrl>
