@@ -220,7 +220,8 @@ Task("PackTool")
         OutputDirectory = state.Paths.OutputFolder,
         MSBuildSettings = new DotNetCoreMSBuildSettings()
                             .SetInformationalVersion(state.Version.AssemblyVersion)
-                            .SetVersion(state.Version.PackageVersion),
+                            .SetVersion(state.Version.PackageVersion)
+                            .WithProperty("ContinuousIntegrationBuild", "True"),
     };
 
     DotNetCorePack(state.Paths.SolutionFile.ToString(), settings);
