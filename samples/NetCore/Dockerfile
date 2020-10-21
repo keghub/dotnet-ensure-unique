@@ -16,9 +16,8 @@ RUN dotnet tool install -g EMG.Tools.EnsureUnique
 FROM mcr.microsoft.com/dotnet/core/runtime:3.1 AS runtime
 WORKDIR /app
 COPY --from=tools /root/.dotnet/tools/ /opt/bin
-ENV PATH="/opt/bin:${PATH}"
 COPY --from=build /out .
-ENV PATH="/root/.dotnet/tools:${PATH}" `
+ENV PATH="/opt/bin:${PATH}" `
     DotNetEnsureUnique__S3__BucketName= `
     DotNetEnsureUnique__S3__FilePrefix=
 ENTRYPOINT dotnet-ensure-unique exe ./ConsoleApp
